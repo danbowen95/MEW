@@ -6,13 +6,14 @@ int loopNo = 0;
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("Time, Milliseconds Since Start, Loop Number");
 }
 void loop() {
-  Serial.print("Time: ");
+  Serial.print(",");
   myTime = millis();
 
   Serial.print(myTime); // prints time since program started
-  Serial.print(" - Loop No:");
+  Serial.print(",");
   Serial.println(loopNo);
 
   loopNo++; // Increment LoopNo
