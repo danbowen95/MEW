@@ -99,14 +99,12 @@ void DriveToSpeed(int ValSpeed)
   if (ValSpeed <= 0)
   {
     // reverse rotation
-    Serial.print("Driving Backward");
     analogWrite(LPWM_Output, 0);
     analogWrite(RPWM_Output, abs(ValSpeed));
   }
   else
   {
     // forward rotation
-    Serial.print("Driving forward");
     analogWrite(RPWM_Output, 0);
     analogWrite(LPWM_Output, ValSpeed);
   } 

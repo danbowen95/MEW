@@ -20,13 +20,13 @@ template<>        inline Print& operator <<(Print &obj, float arg) { obj.print(a
 // pin 0: RX - connect to ODrive TX
 // pin 1: TX - connect to ODrive RX
 // See https://www.pjrc.com/teensy/td_uart.html for other options on Teensy
-HardwareSerial& odrive_serial = Serial3;
+// HardwareSerial& odrive_serial = Serial1;
 
 // Arduino Mega or Due - Serial1
 // pin 19: RX - connect to ODrive TX
 // pin 18: TX - connect to ODrive RX
 // See https://www.arduino.cc/reference/en/language/functions/communication/serial/ for other options
-// HardwareSerial& odrive_serial = Serial1;
+HardwareSerial& odrive_serial = Serial1;
 
 // Arduino without spare serial ports (such as Arduino UNO) have to use software serial.
 // Note that this is implemented poorly and can lead to wrong data sent or read.
@@ -52,11 +52,11 @@ void setup() {
   // In this example we set the same parameters to both motors.
   // You can of course set them different if you want.
   // See the documentation or play around in odrivetool to see the available parameters
-  //for (int axis = 0; axis < 2; ++axis) {
-  //  odrive_serial << "w axis" << axis << ".controller.config.vel_limit " << 10.0f << '\n';
-  //  odrive_serial << "w axis" << axis << ".motor.config.current_lim " << 11.0f << '\n';
+  for (int axis = 0; axis < 2; ++axis) {
+    odrive_serial << "w axis" << axis << ".controller.config.vel_limit " << 10.0f << '\n';
+    odrive_serial << "w axis" << axis << ".motor.config.current_lim " << 11.0f << '\n';
     // This ends up writing something like "w axis0.motor.config.current_lim 10.0\n"
-  //}
+  }
 
   Serial.println("Ready!");
   Serial.println("Send the character '0' or '1' to calibrate respective motor (you must do this before you can command movement)");
@@ -90,12 +90,10 @@ void loop() {
 
     // Sinusoidal test move
     if (c == 's') {
-      int gain=20000;
       Serial.println("Executing test move");
       for (float ph = 0.0f; ph < 6.28318530718f; ph += 0.01f) {
-        float pos_m0 = gain * 2.0f * cos(ph);
+        float pos_m0 = 2.0f * cos(ph);
         float pos_m1 = 2.0f * sin(ph);
-        Serial.println(pos_m0);
         odrive.SetPosition(0, pos_m0);
         odrive.SetPosition(1, pos_m1);
         delay(5);

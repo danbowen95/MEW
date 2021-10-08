@@ -3,8 +3,14 @@
 #include <SoftwareSerial.h>
 #include <ODriveArduino.h>
 // Printing with stream operator helper functions
-template<class T> inline Print& operator <<(Print &obj,     T arg) { obj.print(arg);    return obj; }
-template<>        inline Print& operator <<(Print &obj, float arg) { obj.print(arg, 4); return obj; }
+template<class T> inline Print& operator <<(Print &obj,     T arg) {
+  obj.print(arg);
+  return obj;
+}
+template<>        inline Print& operator <<(Print &obj, float arg) {
+  obj.print(arg, 4);
+  return obj;
+}
 
 
 ////////////////////////////////
@@ -53,7 +59,7 @@ void setup() {
   // You can of course set them different if you want.
   // See the documentation or play around in odrivetool to see the available parameters
   for (int axis = 0; axis < 2; ++axis) {
-    odrive_serial << "w axis" << axis << ".controller.config.vel_limit " << 10.0f << '\n';
+    odrive_serial << "w axis" << axis << ".controller.config.vel_limit " << 1000.0f << '\n';
     odrive_serial << "w axis" << axis << ".motor.config.current_lim " << 11.0f << '\n';
     // This ends up writing something like "w axis0.motor.config.current_lim 10.0\n"
   }
@@ -72,20 +78,20 @@ void loop() {
 
     // Run calibration sequence
     if (c == '0' || c == '1') {
-      int motornum = c-'0';
+      int motornum = c - '0';
       int requested_state;
 
       requested_state = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
-      if(!odrive.run_state(motornum, requested_state, true)) return;
+      if (!odrive.run_state(motornum, requested_state, true)) return;
 
       requested_state = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
-      if(!odrive.run_state(motornum, requested_state, true, 25.0f)) return;
+      if (!odrive.run_state(motornum, requested_state, true, 25.0f)) return;
 
       requested_state = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
       Serial << "Axis" << c << ": Requesting state " << requested_state << '\n';
-      if(!odrive.run_state(motornum, requested_state, false /*don't wait*/)) return;
+      if (!odrive.run_state(motornum, requested_state, false /*don't wait*/)) return;
     }
 
     // Sinusoidal test move
@@ -110,7 +116,7 @@ void loop() {
     if (c == 'p') {
       static const unsigned long duration = 10000;
       unsigned long start = millis();
-      while(millis() - start < duration) {
+      while (millis() - start < duration) {
         for (int motor = 0; motor < 2; ++motor) {
           odrive_serial << "r axis" << motor << ".encoder.pos_estimate\n";
           Serial << odrive.readFloat() << '\t';

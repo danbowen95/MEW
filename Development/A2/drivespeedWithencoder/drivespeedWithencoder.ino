@@ -1,8 +1,9 @@
 
 
 // For encoder
-#define encoder0PinA  2
-#define encoder0PinB  3
+#define encoder0PinA  4
+//int encoder0PinA = 2;
+#define encoder0PinB  5
 volatile long encoder0Pos = 0;
 
 
@@ -11,13 +12,13 @@ int read1;
 char ident;
 
 // For driver
-int RPWM_Output = 5; // Arduino PWM output pin 5; connect to IBT-2 pin 1 (RPWM)
-int LPWM_Output = 6; // Arduino PWM output pin 6; connect to IBT-2 pin 2 (LPWM)
+int RPWM_Output = 2; // Arduino PWM output pin 5; connect to IBT-2 pin 1 (RPWM)
+int LPWM_Output = 3; // Arduino PWM output pin 6; connect to IBT-2 pin 2 (LPWM)
 
 
 
 void setup() {
-  Serial.begin(38400); // opens serial port
+  Serial.begin(9600); // opens serial port
 
   // For Driver
   pinMode(RPWM_Output, OUTPUT);
@@ -38,8 +39,8 @@ void loop() {
     read1 = Serial.parseInt();
     ident = Serial.read();
     // say what you got:
-    Serial.print("Input Value: ");
-    Serial.println(read1);
+//    Serial.print("Input Value: ");
+//    Serial.println(read1);
 
     if ((read1 >= -255) && (read1 <= 255)) {
       DriveToSpeed(read1);
@@ -47,8 +48,6 @@ void loop() {
     else {
 //      Serial.println("Value outside of -255 and 255 you muppet");
     }
-  }
-  if (read1 != 0){
     Serial.println(encoder0Pos);
   }
 }

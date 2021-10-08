@@ -14,12 +14,12 @@
 typedef struct {
   bool valid;    // Is the command valid
   char MGXX[4];  // Geometry or Machine command raw
-  int  MGidx;    // Geometry or Machine index 
+  int  MGidx;    // Geometry or Machine index
   float in[4];   // Array of inputs (max 4)
   char Raw[64];  // Raw serial command
 } cmd;
 // Initalize new command structure
-cmd newCommand = {false, "ABC", 0, {0, 0, 0, 0}, "ABCDEF"};  
+cmd newCommand = {false, "ABC", 0, {0, 0, 0, 0}, "ABCDEF"};
 
 
 // Define some varibles:
@@ -40,8 +40,8 @@ void setup() {
 /// Run Machine
 void loop() {
 
-  
-  
+
+
   processCommand();
 
   enactCommand();
