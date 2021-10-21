@@ -1,49 +1,123 @@
-/*
-   This is the main program that runs the machine
+/*   = = = = = = = = = = = = =  
+    | FIRMWARE FOR MAIN TEENSY |
+     = = = = = = = = = = = = = 
+ *  
+ *  This sketch is to be uploaded to the Slave Teensy - Teensy 4.1.
+    See full documentation in 'Chapter 6 - Mechanising the English Wheel'
+    for more info on opperating the machine.
 
-   Some useful resources used when creating this code:
-    - https://www.marginallyclever.com/2013/08/how-to-build-an-2-axis-arduino-cnc-gcode-interpreter/
-    - Arduino Cookbook
+*  ** WARNING **
+    ! ! When uploading code to this controller, ensure no ground loops are formed ! !
+
+*   Documentation Contents:
+     - Intro
+     - Warnings!
+     - Documentation Contents
+     - Code Structure
+     - Pin Assignments
+     - Recognised Commands 
+
+*   Code Structure:
+     - Preamble
+     - setup()
+     - loop()
+
+*  Pin Assignments:
+    GND - GND of 5v rail
+     0  - RX1 to TX1 of slave Teensy
+     1  - Tx1 to RX1 of slave Teensy
+     2  - Not used
+     3  - LED (Grn) for serial connection
+     4  - Not used
+     5  - Not Used
+     6  - Not Used
+     7  - RX2 to TX of odrive 1
+     8  - TX2 to RX of odrive 1
+     9  - Not Used
+     10 - Not Used
+     11 - Dig reset PTM (220ohm res required)
+     12 - Not Used
+    - - - - - - - - - - - -
+    Vin - 5v rail
+    GND - Not used 
+     3v - To Vcc on ISO chips (3 off)
+     23 - Not Used
+     22 - Not Used
+     21 - RX5 to TX of odrive 3
+     20 - RX5 to TX of odrive 3
+     19 - Not Used
+     18 - Not Used
+     17 - RX3 to TX of odrive 2
+     16 - TX3 to RX of odrive 2
+     15 - Not Used
+     14 - Not Used
+     13 - Not Used
 
 
+*   Recognised Commands:
+     - M00 - Display machine status
+     - M01 - Not Used
 
+
+     
+     - setup()
+     - loop()
 */
 
-/// Some preamble
-// Define structure called 'cmd' to carry input commands
+// Libraries
+#include <HardwareSerial.h>
+#include <ODriveArduino.h>
+
+// Odrive helper
+template<class T> inline Print& operator <<(Print &obj,     T arg) { obj.print(arg);    return obj; }
+template<>        inline Print& operator <<(Print &obj, float arg) { obj.print(arg, 4); return obj; }
+
+// ODrive objects
+ODriveArduino odrive1(Serial2);
+ODriveArduino odrive2(Serial3);
+ODriveArduino odrive3(Serial5);
+
+
+// Set up structures:
 typedef struct {
-  bool valid;    // Is the command valid
-  char MGXX[4];  // Geometry or Machine command raw
-  int  MGidx;    // Geometry or Machine index
-  float in[4];   // Array of inputs (max 4)
-  char Raw[64];  // Raw serial command
-} cmd;
-// Initalize new command structure
-cmd newCommand = {false, "ABC", 0, {0, 0, 0, 0}, "ABCDEF"};
+  boolean calibrated[8]; // Axis calibrated status
+  boolean homed[8];      // Axis homed status
+  float pos[6];          // Position of each axis
+  boolean dynamic[2];    // Dynamic axis active
+  boolean Vacuume[2];    // Vacuum status
+} MachineStatus;
+
+// Define initial status:
+//                        Axis:|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |     
+MachineStatus CurrentStatus = {{ true,false,false,false,false,false,false,false},
+                               { true,false,false,false,false,false,false,false},
+                               {  0  ,  0  ,  0  ,  0        ,  0  ,  0        },
+                               {                          0  ,              0  },
+                               {                          0  ,              0  }};
+
+// Define Varibles:
+int      s = 10;         // Line speed of sheet (mm/s)
+float a1_r = 9.73551501; // Axis 1 movement per rev (mm/rev) = (12/72)*(16/72)*(16/34)*(2*PI())*88.9
+float a3_r = 3;          // Axis 3 movement per rev (mm/rev)
+float a4_r = 2;          // Axis 4 movement per rev (mm/rev)
+float a6_r = 3;          // Axis 6 movement per rev (mm/rev) 
+float a7_r = 2;          // Axis 7 movement per rev (mm/rev) 
 
 
-// Define some varibles:
-bool Active = false;         // Is the machine doing anything (True = yes, False = no)
-boolean newData = false;     // For serial in
-
-
-
-/// Run Setup
 void setup() {
-  Serial.begin(38400); // open coms
-  clearscreen();
-  startup();           // say hello
-  help();              // list help
-  ready();             // say that we're ready
+  // This code runs only ONCE
+
+  // Set up serial to PC:
+  Serial.begin(115200); 
+  
+  // Set up ODrive serial lines using 115200 baud:
+//  Serial1.begin(115200);
+//  Serial2.begin(115200);
+//  Serial3.begin(115200);
+
 }
 
-/// Run Machine
 void loop() {
-
-
-
-  processCommand();
-
-  enactCommand();
+  // put your main code here, to run repeatedly:
 
 }

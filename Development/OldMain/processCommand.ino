@@ -50,7 +50,7 @@ void processCommand() {
         newCommand.in[inidx] = atof(charTemp);  // Convert charTemp to input float
         break;
       }
-      // Case 1 - deliminator, next input
+      // Case 2 - deliminator, next input
       else if (newCommand.Raw[i] == ',' ) {
         newCommand.in[inidx] = atof(charTemp);  // Convert charTemp to input float
         memset(charTemp, '\0', sizeof(charTemp)); // Reset charTemp
