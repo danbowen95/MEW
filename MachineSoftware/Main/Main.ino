@@ -1,6 +1,7 @@
 /*   = = = = = = = = = = = = =  
     | FIRMWARE FOR MAIN TEENSY |
      = = = = = = = = = = = = = 
+     This is trouble
  *  
  *  This sketch is to be uploaded to the Slave Teensy - Teensy 4.1.
     See full documentation in 'Chapter 6 - Mechanising the English Wheel'
