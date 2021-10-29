@@ -1,9 +1,8 @@
 
 
 // For encoder
-#define encoder0PinA  4
-//int encoder0PinA = 2;
-#define encoder0PinB  5
+#define encoder0PinA  20;
+#define encoder0PinB  21;
 volatile long encoder0Pos = 0;
 
 
@@ -12,10 +11,13 @@ int read1;
 char ident;
 
 // For driver
-int RPWM_Output = 2; // Arduino PWM output pin 5; connect to IBT-2 pin 1 (RPWM)
-int LPWM_Output = 3; // Arduino PWM output pin 6; connect to IBT-2 pin 2 (LPWM)
+int RPWM_Output = 23; // Arduino PWM output pin 5; connect to IBT-2 pin 1 (RPWM)
+int LPWM_Output = 22; // Arduino PWM output pin 6; connect to IBT-2 pin 2 (LPWM)
 
-
+int A2_RPWM = 23;                 // RPWM Pin
+int A2_LPWM = 22;                 // LPWM Pin
+int A2_encoderPinA = 20;          // encoder A Pin
+int A2_encoderPinB = 21;          // encoder B Pin
 
 void setup() {
   Serial.begin(9600); // opens serial port
@@ -25,11 +27,17 @@ void setup() {
   pinMode(LPWM_Output, OUTPUT);
 
   // For encoder
-  pinMode(encoder0PinA, INPUT); // Define Pins
-  pinMode(encoder0PinB, INPUT);
-  
-  attachInterrupt(0, doEncoderA, CHANGE); // encoder pin on interrupt 0 (pin 2)
-  attachInterrupt(1, doEncoderB, CHANGE);
+  // Adruino
+  //  pinMode(encoder0PinA, INPUT); // Define Pins
+  //  pinMode(encoder0PinB, INPUT);
+  //  attachInterrupt(0, doEncoderA, CHANGE); // encoder pin on interrupt 0 (pin 2)
+  //  attachInterrupt(1, doEncoderB, CHANGE);
+
+  // Teensy
+  pinMode(A2_encoderPinA, INPUT_PULLUP); // Encoder
+  pinMode(A2_encoderPinB, INPUT_PULLUP);
+  attachInterrupt(A2_encoderPinA, A2_doEncoderA, CHANGE);
+  attachInterrupt(A2_encoderPinB, A2_doEncoderB, CHANGE);
 }
 
 void loop() {
@@ -39,14 +47,14 @@ void loop() {
     read1 = Serial.parseInt();
     ident = Serial.read();
     // say what you got:
-//    Serial.print("Input Value: ");
-//    Serial.println(read1);
+    //    Serial.print("Input Value: ");
+    //    Serial.println(read1);
 
     if ((read1 >= -255) && (read1 <= 255)) {
       DriveToSpeed(read1);
     }
     else {
-//      Serial.println("Value outside of -255 and 255 you muppet");
+      //      Serial.println("Value outside of -255 and 255 you muppet");
     }
     Serial.println(encoder0Pos);
   }
@@ -55,9 +63,9 @@ void loop() {
 
 void DriveToSpeed(int Val)
 {
-//  Serial.println("----------------");
-//  Serial.println(Val);
-//  Serial.println("----------------");
+  //  Serial.println("----------------");
+  //  Serial.println(Val);
+  //  Serial.println("----------------");
 
   if (Val <= 0)
   {

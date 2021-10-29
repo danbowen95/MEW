@@ -67,14 +67,6 @@
 // Libraries
 #include <HardwareSerial.h>
 #include <ODriveArduino.h>
-#include "structsMain.h"
-
-// Function forward declaration
-void printCommand(CommandStruct* NewCommand);
-
-// Structures
-CommandStruct NewCommand;      // What mode are we running?
-masterStatusStruct masterStatus; // What is the status of A1,3,4,6,7
 
 // Odrive helper
 template<class T> inline Print& operator <<(Print &obj,     T arg) { obj.print(arg);    return obj; }
@@ -83,18 +75,27 @@ template<>        inline Print& operator <<(Print &obj, float arg) { obj.print(a
 // ODrive objects
 ODriveArduino odrive1(Serial2);
 ODriveArduino odrive2(Serial3);
-ODriveArduino odrive3(Serial4);
+ODriveArduino odrive3(Serial5);
 
 
+// Set up structures:
+typedef struct {
+  boolean calibrated[8]; // Axis calibrated status
+  boolean homed[8];      // Axis homed status
+  float pos[6];          // Position of each axis
+  boolean dynamic[2];    // Dynamic axis active
+  boolean Vacuume[2];    // Vacuum status
+} MachineStatus;
 
-/// Define Varibles:
+// Define initial status:
+//                        Axis:|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |     
+MachineStatus CurrentStatus = {{ true,false,false,false,false,false,false,false},
+                               { true,false,false,false,false,false,false,false},
+                               {  0  ,  0  ,  0  ,  0        ,  0  ,  0        },
+                               {                          0  ,              0  },
+                               {                          0  ,              0  }};
 
-// For serial coms with PC
-const unsigned int MAX_MESSAGE_LENGTH = 64; // Max length of serial
-char newCommandSerial[64];                        // What the latest cmd is
-bool newCommandSerialBool = false;
-
-
+// Define Varibles:
 int      s = 10;         // Line speed of sheet (mm/s)
 float a1_r = 9.73551501; // Axis 1 movement per rev (mm/rev) = (12/72)*(16/72)*(16/34)*(2*PI())*88.9
 float a3_r = 3;          // Axis 3 movement per rev (mm/rev)
@@ -104,28 +105,19 @@ float a7_r = 2;          // Axis 7 movement per rev (mm/rev)
 
 
 void setup() {
+  // This code runs only ONCE
+
   // Set up serial to PC:
   Serial.begin(115200); 
   
   // Set up ODrive serial lines using 115200 baud:
-  Serial2.begin(115200);
-  Serial3.begin(115200);
-  Serial4.begin(115200);
-
-  // Initalise New command
-  resetCommand(&NewCommand);
-
-  // Print to checkr
-  printCommand(&NewCommand);
+//  Serial1.begin(115200);
+//  Serial2.begin(115200);
+//  Serial3.begin(115200);
 
 }
 
-// This is the main loop
-void loop()
-{
-  readSerial();
+void loop() {
+  // put your main code here, to run repeatedly:
 
-  processSerial();
-
-  enactCommand();
 }

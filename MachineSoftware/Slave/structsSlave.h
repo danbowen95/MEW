@@ -15,11 +15,12 @@ typedef struct {
 } ModeStatus;
 
 // This structure keeps track of the state of each axis
+// This is in encoder counts, run 'printPos' to see real displacements
 typedef struct {
   bool A2Home;   // Has A2 been homed
-  bool A3Home;   // Has A2 been homed
   bool A5Home;   // Has A2 been homed
-  float A2Pos;   // What is the pos of A2
-  float A5Pos;   // What is the pos of A5
-  float A8Pos;   // What is the pos of A8
+  bool A8Home;   // Has A2 been homed
+  float A2Pos;   // What is the pos of A2 (in encoder counts)
+  float A5Pos;   // What is the pos of A5 (in encoder counts)
+  float A8Pos;   // What is the pos of A8 (in encoder counts)
 } slaveStatusStruct;
