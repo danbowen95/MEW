@@ -7,8 +7,8 @@ template<class T> inline Print& operator <<(Print &obj,     T arg) { obj.print(a
 template<>        inline Print& operator <<(Print &obj, float arg) { obj.print(arg, 4); return obj; }
 
 // ODrive objects
-//ODriveArduino odrive1(Serial1);
-ODriveArduino odrive2(Serial2);
+ODriveArduino odrive1(Serial2);
+ODriveArduino odrive2(Serial3);
 //ODriveArduino odrive3(Serial3);
 
 // delay value
@@ -17,8 +17,8 @@ int d = 500;
 void setup() {
   
   // ODrive uses 115200 baud
-//  Serial1.begin(115200);
   Serial2.begin(115200);
+  Serial3.begin(115200);
 //  Serial3.begin(115200);
   
   // Serial to PC
@@ -30,11 +30,11 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 //  
-//  Serial1 << "r vbus_voltage\n";
-//  Serial << "Odrive on serial 1 - Vbus voltage: " << odrive1.readFloat() << '\n';
-//  delay(d);
-//  
   Serial2 << "r vbus_voltage\n";
+  Serial << "Odrive on serial 1 - Vbus voltage: " << odrive1.readFloat() << '\n';
+  delay(d);
+//  
+  Serial3 << "r vbus_voltage\n";
   Serial << "Odrive on serial 2 - Vbus voltage: " << odrive2.readFloat() << '\n';
   delay(d);
 ////

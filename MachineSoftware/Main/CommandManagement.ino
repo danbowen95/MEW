@@ -166,14 +166,28 @@ void enactCommand() {
     n = atoi(buffer);
     char GMtype = commandIDString[0];
 
-    Serial.print("n = ");
-    Serial.println(n);
+    Serial.print("Doing ");
+    Serial.print(GMtype);
+    if (n<10) {Serial.print("0");};
+    Serial.print(n);
 
     switch (GMtype) {
       case 'G':
         switch (n) {
           case 0:
-            Serial.println("Doing G00");
+            G00();
+            break;
+          case 1:
+            Serial.println("Doing G01");
+            G01();
+            break;
+          case 3:
+            Serial.println("Doing G03");
+            G03();
+            break;
+          case 13:
+            Serial.println("Doing G13");
+            //G13();
             break;
         }
         break;
@@ -183,9 +197,22 @@ void enactCommand() {
           case 0:
             Serial.println("Doing M00");
             break;
-          case 11:
-            M11();
+          case 10:
+            Serial.println("Doing M10");
+            //M10();
+            Serial.println("Done M10");
             break;
+          case 11:
+            Serial.println("Doing M11");
+            M11();
+            Serial.println("Done M11");
+            break;
+          case 13:
+            Serial.println("Doing M13");
+            M13();
+            Serial.println("Done M13");
+            break;
+
         }
         break;
     }
