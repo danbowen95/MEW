@@ -28,7 +28,7 @@ void G01() {
 
   // Retrieve Command
   float dist = NewCommand.X;
-  float spd = NewCommand.Y;
+  float spd  = NewCommand.Y;
 
   if (spd == 0) {
     spd = linespeed;
@@ -40,11 +40,12 @@ void G01() {
     Serial.println("Command abandoned");
   }
   else {
+    // Good to go, now move!
 
     // Calc Tmax(millisec)
     Tmax = (abs(dist) * 1000) / spd;
 
-    // Calc number of incs
+    // Calc number of increments
     nInc = Tmax / dt;
 
     // Calc dist in motor revs
@@ -83,18 +84,26 @@ void G03() {
 
   // Retrieve Command
   float dist = NewCommand.X;
-  float spd = NewCommand.Y;
+  float spd  = NewCommand.Y;
 
   if (spd == 0) {
     spd = linespeed;
   }
 
   // Check if calibrated
-  if (!A3Cal) {
-    Serial.println("A3 is not calibrated");
+  if (!A3Cal || !A3Home) {
+    if (!A3Cal) {
+      Serial.println("A3 is not calibrated");
+    }
+    else {
+      Serial.println("A3 is not homed");
+    }
     Serial.println("Command abandoned");
   }
   else {
+
+    // Check if in range
+    
 
     // Calc Tmax(millisec)
     Tmax = (abs(dist) * 1000) / spd;
@@ -129,14 +138,7 @@ void G13( ) {
 
   float Val = NewCommand.X;
 
-  Serial.print("Moving to: ");
-  Serial.println(Val);
 
-  odrive2.SetPosition(0, Val);
-  odrive1.SetPosition(1, Val);
-  delay(5);
-
-  Serial.println("Moved!");
 
 }
 

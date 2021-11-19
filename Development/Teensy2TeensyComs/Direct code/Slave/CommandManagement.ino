@@ -4,13 +4,13 @@ void readSerial() {
   */
   //Check to see if anything is available in the serial receive buffer
 
-  while (Serial1.available() > 0)
+  while (Serial.available() > 0)
   {
     //Create a place to hold the incoming newCommandSerial, newModeSerial
     static unsigned int newValueSerial_pos = 0;
 
     //Read the next available byte in the serial receive buffer
-    char inByte = Serial1.read();
+    char inByte = Serial.read();
 
     if (newValueSerial_pos == 0)
     {
@@ -43,7 +43,9 @@ void readSerial() {
 //
 
 void processSerial() {
-  /* This processes the newCommandSerial into machineStatus */
+  /* This processes the newCommandSerial into machineStatus
+    //
+    //  */
 
   if (newCommandSerialBool == true) {
 
@@ -130,10 +132,6 @@ void enactCommand() {
       A2AbsMove(11.3);
       resetModeCommand(&machineStatus);
       break;
-    case 'v':
-      blinker(value);
-      resetModeCommand(&machineStatus);
-      break;
     case 'x':
       moveup();
       resetModeCommand(&machineStatus);
@@ -147,8 +145,6 @@ void enactCommand() {
       resetModeCommand(&machineStatus);
       break;
   }
-  // Send a signal to say you're done
-  Serial1.write("1");
 }
 
 void resetModeCommand(ModeStatus * machineStatus)

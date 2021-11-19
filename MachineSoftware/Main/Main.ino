@@ -29,8 +29,8 @@
      1  - Tx1 to RX1 of slave Teensy
      2  - Not used
      3  - LED (Grn) for serial connection
-     4  - Not used
-     5  - Not Used
+     4  - Dig A5 Vac
+     5  - Dig A8 Vac
      6  - Not Used
      7  - RX2 to TX of odrive 1
      8  - TX2 to RX of odrive 1
@@ -54,15 +54,6 @@
      14 - Home A4
      13 - Not Used
 
-
-    Recognised Commands:
-     - M00 - Display machine status
-     - M01 - Not Used
-
-
-
-     - setup()
-     - loop()
 */
 
 // Libraries
@@ -74,7 +65,7 @@
 void printCommand(CommandStruct* NewCommand);
 
 // Structures
-CommandStruct NewCommand;      // What mode are we running?
+CommandStruct NewCommand;        // What mode are we running?
 masterStatusStruct masterStatus; // What is the status of A1,3,4,6,7
 
 // Odrive helper
@@ -110,13 +101,13 @@ char newCommandSerial[64];                  // What the latest cmd is
 bool newCommandSerialBool = false;
 
 // For Axis 1
-bool A1Home = false;        // Is Axis homed?
+// bool A1Home = false;     // Is Axis homed?
 bool A1Cal = false;         // Is Axis calibrated?
 float A1Rpmm = 1 / 9.73058; // Axis movement (mm/rev)
 float A1mmpR = 1107449 / 273100.8; // Axis movement (rev/mm)
 float A1MotorPos = 0;       // Axis motor position (rev)
 float A1Pos;                // Axis current position (mm)
-float A1maxPos;             // Max position of Axis (mm)
+// float A1maxPos;          // Max position of Axis (mm)
 
 // For Axis 2
 bool A2Home = false;        // Is Axis homed?
@@ -131,7 +122,8 @@ float A3mmpR = 3;           // Axis movement (rev/mm)
 float A3MotorPos = 0;       // Axis motor position (rev)
 float A3Pos;                // Axis current position (mm)
 float A3HomingPos = 10;     // Homing switch pos (abs) (mm)
-float A3maxPos;             // Max position of Axis (mm)
+float A3minPod = 0;         // Min position of A3
+float A3maxPos = 200;       // Max position of Axis (mm)
 int A3HomePin = 15;         // Pin to A3 home
 
 // For Axis 4
@@ -157,7 +149,10 @@ void setup() {
   // Set up serial to PC:
   Serial.begin(115200);
 
-  // Set up ODrive serial lines using 115200 baud:
+  // Set up serial to Slave:
+  Serial1.begin(9600);
+
+  // Set up serial to ODrive:
   Serial2.begin(115200);
   Serial3.begin(115200);
   Serial4.begin(115200);

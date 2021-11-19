@@ -197,7 +197,6 @@ PID A5PID(&A5_Input, &A5_Output, &A5_Setpoint, A5_P, A5_I, A5_D, DIRECT);
 void setup() {
   // start serial
   Serial.begin(9600);
-  Serial1.begin(9600);
 
   // Initialise structures
   resetModeCommand(&machineStatus);
