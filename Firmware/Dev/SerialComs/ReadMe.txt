@@ -1,0 +1,1 @@
+Blink: This demonstrates how serial can be sent from pc (via serial) in format <mode><float> and then parsed to a switch case scenario. This is fundimental to the coms strategy.
